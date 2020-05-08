@@ -24,14 +24,15 @@ class Library extends React.Component {
     state = { 
         open: true,
         freeBookmark: true,
-        hiring: false
+        hiring: false 
     }
     
-    toggleOpenClosed = () => 
-        this.setState(prevState => ({open: !prevState.open}))
+    componentDidMount = () => console.log("The component is now mounted.");
+    componentDidUpdate = () => console.log("The component is now updated.");
+    componentWillUnmount = () => console.log("The component is now being unmounted.");
     
-    toggleHiring = () =>
-        this.setState(prevState => ({hiring: !prevState.hiring}))
+    toggleOpenClosed = () => this.setState(prevState => ({open: !prevState.open}));
+    toggleHiring = () => this.setState(prevState => ({hiring: !prevState.hiring}));
     
     render() {
         console.log(this.state);
@@ -51,16 +52,16 @@ class Library extends React.Component {
                             pages={book.pages} />
                 ) }
             </div>
-        );
+        )
     }
 }
 
-const bookList = [
+const bookList = [ 
     { "title": "The Sun Also Rises", "author": "Ernest Hemingway", "pages": 260 },
     { "title": "Second Book Woah", "author": "Someone Important", "pages": 123124 },
     { "title": "Third or Fourth IDK", "author": "Someone Who Knows", "pages": 3333 }
 ]
 
-let body = <Library books={bookList}/>
+let body = <Library books={bookList} />
 
 render(body, ROOT);
