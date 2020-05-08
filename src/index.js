@@ -3,19 +3,19 @@ import { render } from 'react-dom';
 
 const ROOT = document.getElementById('root');
 
-const Book = ({ title, author, pages }) =>
+const Book = ({ title, author, pages }) => 
     <section>
         <h2>{title}</h2>
         <p>by: {author}</p>
         <p>Pages: {pages} pages</p>
     </section>
 
-const Hiring = () =>
+const Hiring = () => 
     <div>
         <p>The library is hiring. Go to www.library.com/jobs for more.</p>
     </div>
 
-const NotHiring = () =>
+const NotHiring = () => 
     <div>
         <p>The library is not hiring. Check back later for more.</p>
     </div>
@@ -24,22 +24,43 @@ class Library extends React.Component {
     state = { 
         open: true,
         freeBookmark: true,
-        hiring: false 
+        hiring: false,
+        data: [],
+        loading: false
     }
     
-    componentDidMount = () => console.log("The component is now mounted.");
-    componentDidUpdate = () => console.log("The component is now updated.");
-    componentWillUnmount = () => console.log("The component is now being unmounted.");
+    componentDidMount() {
+        this.setState({loading: true});
+        fetch('https://hplussport.com/api/products/order/price/sort/asc/qty/1')
+            .then(data => data.json())
+            .then(data => this.setState({data, loading: false}));
+    }
     
-    toggleOpenClosed = () => this.setState(prevState => ({open: !prevState.open}));
-    toggleHiring = () => this.setState(prevState => ({hiring: !prevState.hiring}));
+    componentDidUpdate = () => 
+        console.log("The component is now updated.");
+    componentWillUnmount = () => 
+        console.log("The component is now being unmounted.");
+    toggleOpenClosed = () => 
+        this.setState(prevState => ({open: !prevState.open}));
+    toggleHiring = () => 
+        this.setState(prevState => ({hiring: !prevState.hiring}));
     
     render() {
-        console.log(this.state);
-        let {books} = this.props;
+        const {books} = this.props;
         return (
             <div>
-                { this.state.hiring ? <Hiring/> : <NotHiring/> }
+                {this.state.hiring ? <Hiring/> : <NotHiring/>}
+                {this.state.loading 
+                    ? "loading..."
+                    : <div>
+                        {this.state.data.map(product => 
+                            <div>
+                                <h3>Library Product of the Week</h3>
+                                <h4>{product.name}</h4>
+                                <img src={product.image} height={100}/>
+                            </div>)}
+                    </div>
+                }
                 <h1>The library is {this.state.open ? "open" : "closed"}.</h1>
                 <button onClick={this.toggleOpenClosed}>{this.state.open ? "Close." : "Open."}</button>
                 <button onClick={this.toggleHiring}>Change Hiring.</button>
@@ -50,7 +71,8 @@ class Library extends React.Component {
                             title={book.title}
                             author={book.author}
                             pages={book.pages} />
-                ) }
+                  ) 
+                }
             </div>
         )
     }
